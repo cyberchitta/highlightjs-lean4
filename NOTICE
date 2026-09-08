@@ -1,0 +1,10 @@
+highlightjs-lean4
+Copyright 2026 CyberChitta
+
+This product includes software derived from vscode-lean4
+(https://github.com/leanprover/vscode-lean4), Copyright the Lean FRO and
+contributors, licensed under the Apache License, Version 2.0.
+
+The keyword sets in src/keywords.js are generated from that project's
+TextMate grammar (vscode-lean4/syntaxes/lean4.json) by build/gen-keywords.mjs;
+the mode structure in src/languages/lean4.js is a hand port of the same file.

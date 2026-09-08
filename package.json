@@ -1,0 +1,27 @@
+{
+  "name": "highlightjs-lean4",
+  "version": "0.1.0",
+  "description": "A highlight.js language grammar for the Lean 4 theorem prover.",
+  "type": "module",
+  "main": "src/languages/lean4.js",
+  "exports": {
+    ".": "./src/languages/lean4.js"
+  },
+  "files": [
+    "src/languages/lean4.js",
+    "src/keywords.js",
+    "NOTICE"
+  ],
+  "scripts": {
+    "gen": "node build/gen-keywords.mjs",
+    "test": "node --test test/"
+  },
+  "keywords": ["leanprover", "lean4", "highlight.js", "highlightjs", "syntax"],
+  "license": "Apache-2.0",
+  "peerDependencies": {
+    "highlight.js": "^11.9.0"
+  },
+  "devDependencies": {
+    "highlight.js": "^11.12.0"
+  }
+}
