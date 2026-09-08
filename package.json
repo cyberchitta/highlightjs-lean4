@@ -1,6 +1,6 @@
 {
   "name": "highlightjs-lean4",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A highlight.js language grammar for the Lean 4 theorem prover.",
   "type": "module",
   "main": "src/languages/lean4.js",
@@ -14,7 +14,8 @@
   ],
   "scripts": {
     "gen": "node build/gen-keywords.mjs",
-    "test": "node --test test/"
+    "test": "bun test",
+    "prepublishOnly": "bun test"
   },
   "keywords": [
     "leanprover",
@@ -24,6 +25,15 @@
     "syntax"
   ],
   "license": "Apache-2.0",
+  "author": "cyberchitta",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cyberchitta/highlightjs-lean4.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cyberchitta/highlightjs-lean4/issues"
+  },
+  "homepage": "https://github.com/cyberchitta/highlightjs-lean4#readme",
   "peerDependencies": {
     "highlight.js": "^11.9.0"
   },
