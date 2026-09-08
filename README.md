@@ -44,6 +44,7 @@ Mostly the standard highlight.js scopes, so any stock theme works. Two notes:
 | `hljs-title function_` | the name introduced by a definition command |
 | `hljs-meta` | `@[simp]`, `attribute [instance]` |
 | `hljs-subst` | interpolation holes in `s!"…{x}…"` |
+| `hljs-operator` | `→ ↦ ∈ ∉ ≤ ∧ ∘ ×`, `:=`, `->` … |
 | **`hljs-sorry`** | `sorry`, `admit`, `#exit` |
 
 `hljs-sorry` is not a standard scope and **no stock theme styles it.** Upstream
@@ -55,6 +56,20 @@ marks these `invalid.illegal`; incomplete proofs are worth seeing. Add your own:
 
 (`highlightjs-lean` invented the same scope, so themes carrying a rule for it
 already will pick this up.)
+
+## Beyond upstream, deliberately
+
+vscode-lean4's TextMate grammar scopes very little inside a theorem, because in
+VS Code the colour comes from Lean's **semantic token server** — from running
+the compiler. Ported faithfully, a real theorem highlights its `theorem`
+keyword and its name and nothing else.
+
+So this grammar adds three things upstream has no reason to: binders
+(`λ ∀ ∃`) as keywords, logical/set/order notation (`→ ↔ ↦ ∘ × ∧ ∨ ¬ ∈ ∉ ⊆ ∪ ∩
+≤ ≥ ≠ ≡ ⊢ ⁻¹`, plus ASCII `:=`, `->`, `<-`, `=>`) as operators, and the number
+sets (`ℕ ℤ ℝ ℚ ℂ`) as types. Static Lean is the whole use case here; matching a
+grammar that expects a language server behind it would be fidelity to the wrong
+thing.
 
 ## Not supported
 

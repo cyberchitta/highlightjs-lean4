@@ -83,6 +83,28 @@ export default function lean4(hljs) {
     match: /(?:@|\battribute\b\s*)\[[^\]\s]*\]/,
   };
 
+  // ---------------------------------------------------------------------
+  // Beyond upstream. vscode-lean4's grammar scopes almost nothing here,
+  // because in VS Code the colour comes from Lean's *semantic token server* —
+  // from running the compiler. Statically highlighted Lean therefore renders
+  // almost entirely plain: a real theorem lights up its `theorem` and its
+  // name, and nothing else. These three modes buy back the notation that
+  // carries the meaning. They are a deliberate divergence from upstream.
+  // ---------------------------------------------------------------------
+
+  // Binders read as keywords: they introduce, they do not relate.
+  const BINDER = { scope: 'keyword', match: /[λ∀∃]/ };
+
+  // Arrows, connectives, set and order relations, plus ASCII `:=` and `->`.
+  // Longest alternatives first — `⁻¹` and `<->` must beat their prefixes.
+  const OPERATOR = {
+    scope: 'operator',
+    match: /⁻¹|<->|->|<-|=>|:=|[→←↔↦⟶⟹∘×∧∨¬∈∉⊆⊂⊇⊃∪∩≤≥≠≡≈∣⊢±∑∏√∫∞]/,
+  };
+
+  // Mathlib's number sets. Not identifiers in practice — nobody rebinds ℕ.
+  const MATH_TYPE = { scope: 'type', match: /[ℕℤℝℚℂ𝔽𝕜]/ };
+
   const NUMBER = {
     scope: 'number',
     match: /\b(?:0[xX][0-9a-fA-F]+|0[bB][01]+|\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)\b/,
@@ -120,6 +142,9 @@ export default function lean4(hljs) {
       CHAR,
       FRENCH_QUOTED,
       DEFINITION,
+      MATH_TYPE,
+      BINDER,
+      OPERATOR,
       NUMBER,
     ],
   };

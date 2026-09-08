@@ -30,3 +30,9 @@ example : Bool := true
 def broken : Nat := sorry
 
 end Praxis
+
+-- Notation beyond upstream's grammar.
+theorem notation_sample (s : Finset ℕ) :
+    ∀ x ∈ s, ∃ y, x ≤ y ∧ y ∉ s → (x, y) ∈ s ×ˢ s := by
+  intro x hx
+  exact ⟨x, le_refl x, λ h => absurd hx h⟩

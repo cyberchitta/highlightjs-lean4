@@ -63,3 +63,21 @@ test('interpolation holes are substitutions', () => {
 test('hex literals are numbers', () => {
   assert.match(html, /<span class="hljs-number">0x1F<\/span>/);
 });
+
+test('binders are keywords', () => {
+  for (const b of ['∀', '∃', 'λ'])
+    assert.match(html, new RegExp(`<span class="hljs-keyword">${b}</span>`), b);
+});
+
+test('logical and set notation are operators', () => {
+  for (const op of ['→', '∈', '∉', '≤', '∧'])
+    assert.match(html, new RegExp(`<span class="hljs-operator">${op}</span>`), op);
+});
+
+test('ASCII := is an operator', () => {
+  assert.match(html, /<span class="hljs-operator">:=<\/span>/);
+});
+
+test('number sets are types', () => {
+  assert.match(html, /<span class="hljs-type">ℕ<\/span>/);
+});
