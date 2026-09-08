@@ -39,7 +39,8 @@ Mostly the standard highlight.js scopes, so any stock theme works. Two notes:
 | Scope | Covers |
 |---|---|
 | `hljs-keyword` | commands, tactics, modifiers (`theorem`, `deriving`, `private`) |
-| `hljs-type` | `Prop`, `Type`, `Sort` |
+| `hljs-type` | `Prop`, `Type`, `Sort`, `ℕ ℤ ℝ ℚ ℂ`, and any UpperCamelCase name |
+| `hljs-params` | binder variables — the names ahead of a `:` in `(x y : T)` |
 | `hljs-built_in` | `#eval`, `#check`, `#print`, … |
 | `hljs-title function_` | the name introduced by a definition command |
 | `hljs-meta` | `@[simp]`, `attribute [instance]` |
@@ -64,12 +65,21 @@ VS Code the colour comes from Lean's **semantic token server** — from running
 the compiler. Ported faithfully, a real theorem highlights its `theorem`
 keyword and its name and nothing else.
 
-So this grammar adds three things upstream has no reason to: binders
+So this grammar adds several things upstream has no reason to: binders
 (`λ ∀ ∃`) as keywords, logical/set/order notation (`→ ↔ ↦ ∘ × ∧ ∨ ¬ ∈ ∉ ⊆ ∪ ∩
 ≤ ≥ ≠ ≡ ⊢ ⁻¹`, plus ASCII `:=`, `->`, `<-`, `=>`) as operators, and the number
-sets (`ℕ ℤ ℝ ℚ ℂ`) as types. Static Lean is the whole use case here; matching a
-grammar that expects a language server behind it would be fidelity to the wrong
-thing.
+sets (`ℕ ℤ ℝ ℚ ℂ`) as types.
+
+It also colours identifiers, which a grammar cannot strictly know how to do —
+Lean's naming convention is regular enough to make it worth doing anyway.
+UpperCamelCase names are scoped as types (catching structures, classes,
+constructors and namespaces alike), and the run of lowercase names ahead of a
+`:` is scoped as binder parameters, so `(fewer more : Finset α)` colours both
+names. Expect the occasional miss: a namespace is not a type, and the grammar
+cannot tell them apart.
+
+Static Lean is the whole use case here; matching a grammar that expects a
+language server behind it would be fidelity to the wrong thing.
 
 ## Not supported
 

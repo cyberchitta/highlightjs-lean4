@@ -81,3 +81,23 @@ test('ASCII := is an operator', () => {
 test('number sets are types', () => {
   assert.match(html, /<span class="hljs-type">ℕ<\/span>/);
 });
+
+test('UpperCamelCase names are types', () => {
+  for (const t of ['ActionFrame', 'Finset', 'Nat', 'AllocationPlan'])
+    assert.equal(scopeOf(t), 'type', t);
+});
+
+test('binder variables are params, across a multi-name run', () => {
+  assert.match(html, /<span class="hljs-params">praxis<\/span>/);
+  assert.match(html, /<span class="hljs-params">fewer more<\/span>/);
+});
+
+// Both regressions, both observed: `\s+` let a binder run cross a newline and
+// swallow `where`, and without a keyword guard `example : Bool` read as one.
+test('a binder run does not cross a newline into the previous keyword', () => {
+  assert.equal(scopeOf('where'), 'keyword');
+});
+
+test('keywords that take a colon are not binders', () => {
+  assert.equal(scopeOf('example'), 'keyword');
+});

@@ -105,6 +105,45 @@ export default function lean4(hljs) {
   // Mathlib's number sets. Not identifiers in practice — nobody rebinds ℕ.
   const MATH_TYPE = { scope: 'type', match: /[ℕℤℝℚℂ𝔽𝕜]/ };
 
+  // Lean names types, structures, classes and constructors in UpperCamelCase
+  // and everything else in lowerCamelCase or snake_case, near-universally in
+  // core and mathlib. A grammar cannot know what a name *is*, but that
+  // convention is regular enough to colour on. Namespaces (`Nat` in
+  // `Nat.succ`) land here too, which is the right answer often enough.
+  // `[A-Z]`, not `\p{Lu}`: hljs recompiles every mode's regex into one
+  // combined pattern WITHOUT the `u` flag, so a Unicode property escape is
+  // read as a literal and silently matches nothing. Lean type names are
+  // ASCII-initial in practice anyway — Greek here is lowercase type
+  // variables (`α β γ`), which are not types to colour.
+  const UPPER_TYPE = {
+    scope: 'type',
+    match: /\b[A-Z][\w'\u2080-\u209C]*/,
+    relevance: 0,
+  };
+
+  // Binder variables: the run of names ahead of a `:` inside a binder group,
+  // so `(fewer more : Finset α)` colours both. Three things this has to get
+  // right, each of which it got wrong first:
+  //   - `(?!=)` keeps `:=` out; that is an operator, not a binder.
+  //   - the separator is `[ \t]`, not `\s`. With `\s` a run crosses a
+  //     newline, and `where` at the end of one line joined `size` at the
+  //     start of the next into a single bogus binder.
+  //   - keywords are excluded up front. `example : Bool` is a command taking
+  //     a colon directly, and without the guard `example` reads as a binder.
+  //     Built from the generated keyword list so it tracks Lean releases.
+  const IDENT = "[a-z_][\\w'\\u2080-\\u209C]*";
+  const LOWER_KEYWORDS = KEYWORDS.keyword
+    .filter((w) => /^[a-z_]/.test(w))
+    .map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|');
+  const PARAMS = {
+    scope: 'params',
+    match: new RegExp(
+      `\\b(?!(?:${LOWER_KEYWORDS})\\b)${IDENT}(?:[ \\t]+${IDENT})*(?=[ \\t]*:(?!=))`
+    ),
+    relevance: 0,
+  };
+
   const NUMBER = {
     scope: 'number',
     match: /\b(?:0[xX][0-9a-fA-F]+|0[bB][01]+|\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)\b/,
@@ -145,6 +184,10 @@ export default function lean4(hljs) {
       MATH_TYPE,
       BINDER,
       OPERATOR,
+      // Before UPPER_TYPE: a binder run is lowercase, but keeping the pair
+      // adjacent documents that they partition the identifier space.
+      PARAMS,
+      UPPER_TYPE,
       NUMBER,
     ],
   };
